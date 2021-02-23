@@ -19,5 +19,5 @@ mix.js("resources/js/app.js", "public/js")
     .postCss("resources/css/app.css", "public/css", [require("tailwindcss")])
     .vue();
 
-// mix.browserSync("http://localhost:8000");
+mix.browserSync("http://localhost:8000");
 mix.disableNotifications();

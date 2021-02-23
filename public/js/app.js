@@ -2140,6 +2140,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "Post",
   props: ["post"]
@@ -38507,7 +38509,11 @@ var render = function() {
             ]),
             _vm._v(" "),
             _c("div", { staticClass: "text-sm text-gray-600" }, [
-              _vm._v("1h ago")
+              _vm._v(
+                "\n                    " +
+                  _vm._s(_vm.post.data.attributes.posted_at) +
+                  "\n                "
+              )
             ])
           ])
         ]),

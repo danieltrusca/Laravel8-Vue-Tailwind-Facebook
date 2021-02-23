@@ -15,7 +15,9 @@
                             post.data.attributes.posted_by.data.attributes.name
                         }}
                     </div>
-                    <div class="text-sm text-gray-600">1h ago</div>
+                    <div class="text-sm text-gray-600">
+                        {{ post.data.attributes.posted_at }}
+                    </div>
                 </div>
             </div>
             <div class="mt-4">
