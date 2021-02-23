@@ -1,7 +1,9 @@
 <template>
     <div class="flex flex-col items-center py-4">
         <NewPost />
+        <p v-if="loading">Loading...</p>
         <Post
+            v-else
             v-for="post in posts.data"
             :key="post.data.post_id"
             :post="post"
@@ -20,7 +22,8 @@ export default {
     },
     data: () => {
         return {
-            posts: []
+            posts: [],
+            loading: true
         };
     },
 
@@ -29,9 +32,11 @@ export default {
             .get("/api/posts")
             .then(res => {
                 this.posts = res.data;
+                this.loading = false;
             })
             .catch(error => {
                 console.log(error.message);
+                this.loading = false;
             });
     }
 };
