@@ -6,6 +6,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserPostController;
 use App\Http\Controllers\AuthUserController;
+use App\Http\Controllers\FriendRequestController;
 
 
 Route::middleware('auth:api')->group(function(){
@@ -15,7 +16,8 @@ Route::middleware('auth:api')->group(function(){
     Route::apiResources([
         'posts'=>PostController::class,
         'users'=> UserController::class,
-        'users/{user}/posts'=>UserPostController::class
+        'users/{user}/posts'=>UserPostController::class,
+        'friend-request'=>FriendRequestController::class
     ]);
 
 });
