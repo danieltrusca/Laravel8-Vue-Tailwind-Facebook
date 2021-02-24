@@ -54,7 +54,7 @@
                 </svg>
             </router-link>
             <router-link
-                :to="'/users/' + user.data.user_id"
+                :to="'/users/' + authUser.data.user_id"
                 class="px-6 border-b-2 border-white h-full flex items-center "
             >
                 <img
@@ -93,22 +93,15 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
     name: "Nav",
-    data: () => {
-        return {
-            user: null
-        };
-    },
-    mounted() {
-        axios
-            .get("/api/auth-user")
-            .then(res => {
-                this.user = res.data;
-            })
-            .catch(error => {
-                console.log("the authenticated user can not be fetched");
-            });
+
+    computed: {
+        ...mapGetters({
+            authUser: "authUser"
+        })
     }
 };
 </script>
