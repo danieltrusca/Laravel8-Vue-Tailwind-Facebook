@@ -38,7 +38,8 @@
                 </div>
             </div>
         </div>
-        <div class="w-1/3 flex justify-center items-center h-full">
+        <p v-if="authUserStatus">Loading...</p>
+        <div class="w-1/3 flex justify-center items-center h-full" v-else>
             <router-link
                 to="/"
                 class="px-6 border-b-2 border-blue-500 h-full flex items-center "
@@ -100,7 +101,8 @@ export default {
 
     computed: {
         ...mapGetters({
-            authUser: "authUser"
+            authUser: "authUser",
+            authUserStatus: "authUserStatus"
         })
     }
 };

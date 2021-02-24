@@ -1870,6 +1870,14 @@ __webpack_require__.r(__webpack_exports__);
   },
   mounted: function mounted() {
     this.$store.dispatch("fetchAuthUser");
+  },
+  created: function created() {
+    this.$store.dispatch("setPageTitle", this.$route.meta.title);
+  },
+  watch: {
+    $route: function $route(to, from) {
+      this.$store.dispatch("setPageTitle", to.meta.title);
+    }
   }
 });
 
@@ -1987,11 +1995,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "Nav",
   computed: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapGetters)({
-    authUser: "authUser"
+    authUser: "authUser",
+    authUserStatus: "authUserStatus"
   }))
 });
 
@@ -2425,11 +2435,17 @@ vue__WEBPACK_IMPORTED_MODULE_2__.default.use(vue_router__WEBPACK_IMPORTED_MODULE
   routes: [{
     path: "/",
     name: "home",
-    component: _views_NewsFeed_vue__WEBPACK_IMPORTED_MODULE_0__.default
+    component: _views_NewsFeed_vue__WEBPACK_IMPORTED_MODULE_0__.default,
+    meta: {
+      title: "News Feed"
+    }
   }, {
     path: "/users/:userId",
     name: "user.show",
-    component: _views_users_Show_vue__WEBPACK_IMPORTED_MODULE_1__.default
+    component: _views_users_Show_vue__WEBPACK_IMPORTED_MODULE_1__.default,
+    meta: {
+      title: "Profile"
+    }
   }]
 }));
 
@@ -2446,18 +2462,62 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
-/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
 /* harmony import */ var _modules_user_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./modules/user.js */ "./resources/js/store/modules/user.js");
+/* harmony import */ var _modules_title_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./modules/title.js */ "./resources/js/store/modules/title.js");
 
 
 
-vue__WEBPACK_IMPORTED_MODULE_1__.default.use(vuex__WEBPACK_IMPORTED_MODULE_2__.default);
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (new vuex__WEBPACK_IMPORTED_MODULE_2__.default.Store({
+
+vue__WEBPACK_IMPORTED_MODULE_2__.default.use(vuex__WEBPACK_IMPORTED_MODULE_3__.default);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (new vuex__WEBPACK_IMPORTED_MODULE_3__.default.Store({
   modules: {
-    User: _modules_user_js__WEBPACK_IMPORTED_MODULE_0__.default
+    User: _modules_user_js__WEBPACK_IMPORTED_MODULE_0__.default,
+    Title: _modules_title_js__WEBPACK_IMPORTED_MODULE_1__.default
   }
 }));
+
+/***/ }),
+
+/***/ "./resources/js/store/modules/title.js":
+/*!*********************************************!*\
+  !*** ./resources/js/store/modules/title.js ***!
+  \*********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+var state = {
+  title: "Welcome"
+};
+var getters = {
+  pageTitle: function pageTitle(state) {
+    return state.title;
+  }
+};
+var actions = {
+  setPageTitle: function setPageTitle(_ref, title) {
+    var commit = _ref.commit,
+        state = _ref.state;
+    commit("setTitle", title);
+  }
+};
+var mutations = {
+  setTitle: function setTitle(state, title) {
+    state.title = title + " | Facebook";
+    document.title = state.title;
+  }
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  state: state,
+  getters: getters,
+  actions: actions,
+  mutations: mutations
+});
 
 /***/ }),
 
@@ -2474,11 +2534,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 var state = {
   user: null,
-  userStatus: null
+  userStatus: true
 };
 var getters = {
   authUser: function authUser(state) {
     return state.user;
+  },
+  authUserStatus: function authUserStatus(state) {
+    return state.userStatus;
   }
 };
 var actions = {
@@ -2489,12 +2552,17 @@ var actions = {
       commit("setAuthUser", res.data);
     })["catch"](function (error) {
       console.log("Unable to fetch auth user");
+    })["finally"](function () {
+      commit("setAuthUserStatus", false);
     });
   }
 };
 var mutations = {
   setAuthUser: function setAuthUser(state, user) {
     state.user = user;
+  },
+  setAuthUserStatus: function setAuthUserStatus(state, userStatus) {
+    state.userStatus = userStatus;
   }
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -38518,89 +38586,91 @@ var render = function() {
         )
       ]),
       _vm._v(" "),
-      _c(
-        "div",
-        { staticClass: "w-1/3 flex justify-center items-center h-full" },
-        [
-          _c(
-            "router-link",
-            {
-              staticClass:
-                "px-6 border-b-2 border-blue-500 h-full flex items-center ",
-              attrs: { to: "/" }
-            },
+      _vm.authUserStatus
+        ? _c("p", [_vm._v("Loading...")])
+        : _c(
+            "div",
+            { staticClass: "w-1/3 flex justify-center items-center h-full" },
             [
               _c(
-                "svg",
+                "router-link",
                 {
-                  staticClass: "fill-current w-5 h-5",
-                  attrs: {
-                    xmlns: "http://www.w3.org/2000/svg",
-                    viewBox: "0 0 24 24"
-                  }
+                  staticClass:
+                    "px-6 border-b-2 border-blue-500 h-full flex items-center ",
+                  attrs: { to: "/" }
                 },
                 [
-                  _c("path", {
+                  _c(
+                    "svg",
+                    {
+                      staticClass: "fill-current w-5 h-5",
+                      attrs: {
+                        xmlns: "http://www.w3.org/2000/svg",
+                        viewBox: "0 0 24 24"
+                      }
+                    },
+                    [
+                      _c("path", {
+                        attrs: {
+                          d:
+                            "M22.6 11l-9.9-9c-.4-.4-1.1-.4-1.5 0l-9.9 9c-.3.3-.5.8-.3 1.2.2.5.6.8 1.1.8h1.6v9c0 .4.3.6.6.6h5.4c.4 0 .6-.3.6-.6v-5.5h3.2V22c0 .4.3.6.6.6h5.4c.4 0 .6-.3.6-.6v-9h1.6c.5 0 .9-.3 1.1-.7.3-.5.2-1-.2-1.3zm-2.5-8h-4.3l5 4.5V3.6c0-.3-.3-.6-.7-.6z"
+                        }
+                      })
+                    ]
+                  )
+                ]
+              ),
+              _vm._v(" "),
+              _c(
+                "router-link",
+                {
+                  staticClass:
+                    "px-6 border-b-2 border-white h-full flex items-center ",
+                  attrs: { to: "/users/" + _vm.authUser.data.user_id }
+                },
+                [
+                  _c("img", {
+                    staticClass: "w-8 h-8 object-cover rounded-full",
                     attrs: {
-                      d:
-                        "M22.6 11l-9.9-9c-.4-.4-1.1-.4-1.5 0l-9.9 9c-.3.3-.5.8-.3 1.2.2.5.6.8 1.1.8h1.6v9c0 .4.3.6.6.6h5.4c.4 0 .6-.3.6-.6v-5.5h3.2V22c0 .4.3.6.6.6h5.4c.4 0 .6-.3.6-.6v-9h1.6c.5 0 .9-.3 1.1-.7.3-.5.2-1-.2-1.3zm-2.5-8h-4.3l5 4.5V3.6c0-.3-.3-.6-.7-.6z"
+                      src:
+                        "https://images.pexels.com/photos/670720/pexels-photo-670720.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
+                      alt: "profile image for user"
                     }
                   })
                 ]
-              )
-            ]
-          ),
-          _vm._v(" "),
-          _c(
-            "router-link",
-            {
-              staticClass:
-                "px-6 border-b-2 border-white h-full flex items-center ",
-              attrs: { to: "/users/" + _vm.authUser.data.user_id }
-            },
-            [
-              _c("img", {
-                staticClass: "w-8 h-8 object-cover rounded-full",
-                attrs: {
-                  src:
-                    "https://images.pexels.com/photos/670720/pexels-photo-670720.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-                  alt: "profile image for user"
-                }
-              })
-            ]
-          ),
-          _vm._v(" "),
-          _c(
-            "router-link",
-            {
-              staticClass:
-                "px-6 border-b-2 border-white h-full flex items-center ",
-              attrs: { to: "/" }
-            },
-            [
+              ),
+              _vm._v(" "),
               _c(
-                "svg",
+                "router-link",
                 {
-                  staticClass: "fill-current w-5 h-5",
-                  attrs: {
-                    xmlns: "http://www.w3.org/2000/svg",
-                    viewBox: "0 0 24 24"
-                  }
+                  staticClass:
+                    "px-6 border-b-2 border-white h-full flex items-center ",
+                  attrs: { to: "/" }
                 },
                 [
-                  _c("path", {
-                    attrs: {
-                      d:
-                        "M.5 11.6c0 3.4 1.7 6.3 4.3 8.3V24l3.9-2.1c1 .3 2.2.4 3.3.4 6.4 0 11.5-4.8 11.5-10.7C23.5 5.8 18.3 1 12 1S.5 5.8.5 11.6zm10.3-2.9l3 3.1 5.6-3.1-6.3 6.7-2.9-3.1-5.7 3.1 6.3-6.7z"
-                    }
-                  })
+                  _c(
+                    "svg",
+                    {
+                      staticClass: "fill-current w-5 h-5",
+                      attrs: {
+                        xmlns: "http://www.w3.org/2000/svg",
+                        viewBox: "0 0 24 24"
+                      }
+                    },
+                    [
+                      _c("path", {
+                        attrs: {
+                          d:
+                            "M.5 11.6c0 3.4 1.7 6.3 4.3 8.3V24l3.9-2.1c1 .3 2.2.4 3.3.4 6.4 0 11.5-4.8 11.5-10.7C23.5 5.8 18.3 1 12 1S.5 5.8.5 11.6zm10.3-2.9l3 3.1 5.6-3.1-6.3 6.7-2.9-3.1-5.7 3.1 6.3-6.7z"
+                        }
+                      })
+                    ]
+                  )
                 ]
               )
-            ]
-          )
-        ],
-        1
-      ),
+            ],
+            1
+          ),
       _vm._v(" "),
       _c("div", { staticClass: "w-1/3 flex justify-end" }, [
         _c(
