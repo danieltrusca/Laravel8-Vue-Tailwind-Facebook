@@ -1978,7 +1978,21 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  name: "Nav"
+  name: "Nav",
+  data: function data() {
+    return {
+      user: null
+    };
+  },
+  mounted: function mounted() {
+    var _this = this;
+
+    axios.get("/api/auth-user").then(function (res) {
+      _this.user = res.data;
+    })["catch"](function (error) {
+      console.log("the authenticated user can not be fetched");
+    });
+  }
 });
 
 /***/ }),
@@ -38468,7 +38482,7 @@ var render = function() {
             {
               staticClass:
                 "px-6 border-b-2 border-white h-full flex items-center ",
-              attrs: { to: "/" }
+              attrs: { to: "/users/" + _vm.user.data.user_id }
             },
             [
               _c("img", {

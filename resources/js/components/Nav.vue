@@ -54,7 +54,7 @@
                 </svg>
             </router-link>
             <router-link
-                to="/"
+                :to="'/users/' + user.data.user_id"
                 class="px-6 border-b-2 border-white h-full flex items-center "
             >
                 <img
@@ -94,7 +94,22 @@
 
 <script>
 export default {
-    name: "Nav"
+    name: "Nav",
+    data: () => {
+        return {
+            user: null
+        };
+    },
+    mounted() {
+        axios
+            .get("/api/auth-user")
+            .then(res => {
+                this.user = res.data;
+            })
+            .catch(error => {
+                console.log("the authenticated user can not be fetched");
+            });
+    }
 };
 </script>
 
