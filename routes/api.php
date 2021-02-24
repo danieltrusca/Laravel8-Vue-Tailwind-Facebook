@@ -5,11 +5,13 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserPostController;
+use App\Http\Controllers\AuthUserController;
 
 
 Route::middleware('auth:api')->group(function(){
     // Route::apiResource('posts', PostController::class);
     // Route::apiResource('users', UserController::class);
+    Route::get('/auth-user', [AuthUserController::class, 'show']);
     Route::apiResources([
         'posts'=>PostController::class,
         'users'=> UserController::class,

@@ -38,7 +38,8 @@
                 </div>
             </div>
         </div>
-        <div class="w-1/3 flex justify-center items-center h-full">
+        <p v-if="authUserStatus">Loading...</p>
+        <div class="w-1/3 flex justify-center items-center h-full" v-else>
             <router-link
                 to="/"
                 class="px-6 border-b-2 border-blue-500 h-full flex items-center "
@@ -54,7 +55,7 @@
                 </svg>
             </router-link>
             <router-link
-                to="/"
+                :to="'/users/' + authUser.data.user_id"
                 class="px-6 border-b-2 border-white h-full flex items-center "
             >
                 <img
@@ -93,8 +94,17 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
-    name: "Nav"
+    name: "Nav",
+
+    computed: {
+        ...mapGetters({
+            authUser: "authUser",
+            authUserStatus: "authUserStatus"
+        })
+    }
 };
 </script>
 
