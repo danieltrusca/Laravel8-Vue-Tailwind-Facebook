@@ -2518,8 +2518,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 var state = {
   user: null,
-  userStatus: true,
-  friendButtonText: null
+  userStatus: true
 };
 var getters = {
   user: function user(state) {
@@ -2533,8 +2532,13 @@ var getters = {
   friendship: function friendship(state) {
     return state.user.data.attributes.friendship;
   },
-  friendButtonText: function friendButtonText(state) {
-    return state.friendButtonText;
+  friendButtonText: function friendButtonText(state, getters, rootState) {
+    if (getters.friendship === null) {
+      return "Add Friend";
+    } else if (getters.friendship.data.attributes.confirmed_at === null) {
+      return "Pending Friend Request";
+    } //return "Accept";
+
   }
 };
 var actions = {
@@ -2544,8 +2548,7 @@ var actions = {
     commit("setUserStatus", "loading");
     axios.get("/api/users/" + userId).then(function (res) {
       commit("setUser", res.data);
-      commit("setUserStatus", "success");
-      dispatch("setFriendButton");
+      commit("setUserStatus", "success"); //dispatch("setFriendButton");
     })["catch"](function (error) {
       commit("setUserStatus", "error");
     });
@@ -2553,35 +2556,23 @@ var actions = {
   sendFriendRequest: function sendFriendRequest(_ref2, friendId) {
     var commit = _ref2.commit,
         state = _ref2.state;
-    commit("setButtonText", "Loading");
+    //commit("setButtonText", "Loading..");
     axios.post("/api/friend-request", {
       friend_id: friendId
     }).then(function (res) {
-      commit("setButtonText", "Pending Friend Request");
-    })["catch"](function (error) {
-      commit("setButtonText", "Add Friend");
-    });
-  },
-  setFriendButton: function setFriendButton(_ref3) {
-    var commit = _ref3.commit,
-        getters = _ref3.getters;
-
-    if (getters.friendship === null) {
-      commit("setButtonText", "Add Friend");
-    } else if (getters.friendship.data.attributes.confirmed_at === null) {
-      commit("setButtonText", "Pending Friend Request");
-    }
+      commit("setUserFriendship", res.data);
+    })["catch"](function (error) {});
   }
 };
 var mutations = {
   setUser: function setUser(state, user) {
     state.user = user;
   },
+  setUserFriendship: function setUserFriendship(state, friendship) {
+    state.user.data.attributes.friendship = friendship;
+  },
   setUserStatus: function setUserStatus(state, userStatus) {
     state.userStatus = userStatus;
-  },
-  setButtonText: function setButtonText(state, text) {
-    state.friendButtonText = text;
   }
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
