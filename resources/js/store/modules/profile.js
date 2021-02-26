@@ -55,8 +55,12 @@ const actions = {
                 commit("setUserStatus", "error");
             });
     },
-    sendFriendRequest({ commit, state }, friendId) {
+    sendFriendRequest({ commit, getters }, friendId) {
         //commit("setButtonText", "Loading..");
+        if (getters.friendButtonText !== "Add Friend") {
+            return;
+        }
+
         axios
             .post("/api/friend-request", { friend_id: friendId })
             .then(res => {

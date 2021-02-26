@@ -2594,8 +2594,13 @@ var actions = {
   },
   sendFriendRequest: function sendFriendRequest(_ref2, friendId) {
     var commit = _ref2.commit,
-        state = _ref2.state;
+        getters = _ref2.getters;
+
     //commit("setButtonText", "Loading..");
+    if (getters.friendButtonText !== "Add Friend") {
+      return;
+    }
+
     axios.post("/api/friend-request", {
       friend_id: friendId
     }).then(function (res) {
