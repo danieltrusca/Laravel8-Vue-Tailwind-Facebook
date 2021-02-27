@@ -43,6 +43,14 @@ const actions = {
                 commit("updateMessage", "");
             })
             .catch(error => {});
+    },
+    likePost({ commit, state }, data) {
+        axios
+            .post("/api/posts/" + data.postId + "/like")
+            .then(res => {
+                commit("pushLikes", { likes: res.data, postKey: data.postKey });
+            })
+            .catch(error => {});
     }
 };
 
@@ -58,6 +66,9 @@ const mutations = {
     },
     pushPost(state, newMessage) {
         state.posts.data.unshift(newMessage);
+    },
+    pushLikes(state, data) {
+        state.posts.data[data.postKey].data.attributes.likes = data.likes;
     }
 };
 

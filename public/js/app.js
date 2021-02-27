@@ -2207,6 +2207,17 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "Post",
   props: ["post"]
@@ -2613,6 +2624,16 @@ var actions = {
       commit("setPostsStatus", "success");
       commit("updateMessage", "");
     })["catch"](function (error) {});
+  },
+  likePost: function likePost(_ref3, data) {
+    var commit = _ref3.commit,
+        state = _ref3.state;
+    axios.post("/api/posts/" + data.postId + "/like").then(function (res) {
+      commit("pushLikes", {
+        likes: res.data,
+        postKey: data.postKey
+      });
+    })["catch"](function (error) {});
   }
 };
 var mutations = {
@@ -2627,6 +2648,9 @@ var mutations = {
   },
   pushPost: function pushPost(state, newMessage) {
     state.posts.data.unshift(newMessage);
+  },
+  pushLikes: function pushLikes(state, data) {
+    state.posts.data[data.postKey].data.attributes.likes = data.likes;
   }
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -39620,7 +39644,11 @@ var render = function() {
               ]
             ),
             _vm._v(" "),
-            _c("p", [_vm._v("Jane Smith and 121 others")])
+            _c("p", [
+              _vm._v(
+                _vm._s(_vm.post.data.attributes.likes.like_count) + " likes"
+              )
+            ])
           ]),
           _vm._v(" "),
           _vm._m(1)
@@ -39635,7 +39663,20 @@ var render = function() {
             "button",
             {
               staticClass:
-                "flex justify-center py-2 rounded-lg text-sm w-full focus:outline-none"
+                "flex justify-center py-2 rounded-lg text-sm w-full focus:outline-none",
+              class: [
+                _vm.post.data.attributes.likes.user_likes_post
+                  ? "bg-blue-600 text-white"
+                  : ""
+              ],
+              on: {
+                click: function($event) {
+                  return _vm.$store.dispatch("likePost", {
+                    postId: _vm.post.data.post_id,
+                    postKey: _vm.$vnode.key
+                  })
+                }
+              }
             },
             [
               _c(
