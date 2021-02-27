@@ -2032,6 +2032,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_0__);
 //
 //
 //
@@ -2077,8 +2079,33 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  name: "NewPost"
+  name: "NewPost",
+  computed: {
+    postMessage: {
+      get: function get() {
+        return this.$store.getters.postMessage;
+      },
+      // set(postMessage) {
+      //     this.$store.commit("updateMessage", postMessage);
+      // }
+      //we use lodash to enable calling in Vuex store updateMessage everytime when you press a letter
+      set: lodash__WEBPACK_IMPORTED_MODULE_0___default().debounce(function (postMessage) {
+        this.$store.commit("updateMessage", postMessage);
+      }, 300)
+    }
+  },
+  methods: {
+    postHandler: function postHandler() {
+      this.$store.dispatch("postMessage");
+    }
+  }
 });
 
 /***/ }),
@@ -2547,7 +2574,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 var state = {
   posts: null,
-  postsStatus: null
+  postsStatus: null,
+  postMessage: ""
 };
 var getters = {
   posts: function posts(state) {
@@ -2557,6 +2585,9 @@ var getters = {
     return {
       postsStatus: state.postsStatus
     };
+  },
+  postMessage: function postMessage(state) {
+    return state.postMessage;
   }
 };
 var actions = {
@@ -2570,6 +2601,18 @@ var actions = {
     })["catch"](function (error) {
       commit("setPostsStatus", "error");
     });
+  },
+  postMessage: function postMessage(_ref2) {
+    var commit = _ref2.commit,
+        state = _ref2.state;
+    commit("setPostsStatus", "loading");
+    axios.post("/api/posts", {
+      body: state.postMessage
+    }).then(function (res) {
+      commit("pushPost", res.data);
+      commit("setPostsStatus", "success");
+      commit("updateMessage", "");
+    })["catch"](function (error) {});
   }
 };
 var mutations = {
@@ -2578,6 +2621,12 @@ var mutations = {
   },
   setPostsStatus: function setPostsStatus(state, status) {
     state.postsStatus = status;
+  },
+  updateMessage: function updateMessage(state, newMessage) {
+    state.postMessage = newMessage;
+  },
+  pushPost: function pushPost(state, newMessage) {
+    state.posts.data.unshift(newMessage);
   }
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -39392,17 +39441,39 @@ var render = function() {
         { staticClass: "flex-1 flex mx-4" },
         [
           _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.postMessage,
+                expression: "postMessage"
+              }
+            ],
             staticClass:
               "w-full pl-4 h-8 bg-gray-200 rounded-full focus:outline-none focus:shadow-outline text-sm",
-            attrs: { type: "text", name: "body", placeholder: "Add a post" }
+            attrs: { type: "text", name: "body", placeholder: "Add a post" },
+            domProps: { value: _vm.postMessage },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.postMessage = $event.target.value
+              }
+            }
           }),
           _vm._v(" "),
           _c("transition", { attrs: { name: "fade" } }, [
-            _c(
-              "button",
-              { staticClass: "bg-gray-200 ml-2 px-3 py-1 rounded-full" },
-              [_vm._v("\n                    Post\n                ")]
-            )
+            _vm.postMessage
+              ? _c(
+                  "button",
+                  {
+                    staticClass: "bg-gray-200 ml-2 px-3 py-1 rounded-full",
+                    on: { click: _vm.postHandler }
+                  },
+                  [_vm._v("\n                    Post\n                ")]
+                )
+              : _vm._e()
           ])
         ],
         1

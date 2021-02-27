@@ -1,6 +1,7 @@
 const state = {
     posts: null,
-    postsStatus: null
+    postsStatus: null,
+    postMessage: ""
 };
 
 const getters = {
@@ -11,6 +12,9 @@ const getters = {
         return {
             postsStatus: state.postsStatus
         };
+    },
+    postMessage: state => {
+        return state.postMessage;
     }
 };
 
@@ -27,6 +31,18 @@ const actions = {
             .catch(error => {
                 commit("setPostsStatus", "error");
             });
+    },
+    postMessage({ commit, state }) {
+        commit("setPostsStatus", "loading");
+
+        axios
+            .post("/api/posts", { body: state.postMessage })
+            .then(res => {
+                commit("pushPost", res.data);
+                commit("setPostsStatus", "success");
+                commit("updateMessage", "");
+            })
+            .catch(error => {});
     }
 };
 
@@ -36,6 +52,12 @@ const mutations = {
     },
     setPostsStatus(state, status) {
         state.postsStatus = status;
+    },
+    updateMessage(state, newMessage) {
+        state.postMessage = newMessage;
+    },
+    pushPost(state, newMessage) {
+        state.posts.data.unshift(newMessage);
     }
 };
 
