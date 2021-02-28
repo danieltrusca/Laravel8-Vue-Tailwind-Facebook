@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class PostCollection extends ResourceCollection
+class CommentCollection extends ResourceCollection
 {
     /**
      * Transform the resource collection into an array.
@@ -15,8 +15,8 @@ class PostCollection extends ResourceCollection
     public function toArray($request)
     {
         return [
-            'data' => $this->collection,
-
+            'data'=>$this->collection,
+            'comment_count' => $this->count(),
             'links' => [
                 'self' => url('/posts'),
             ]

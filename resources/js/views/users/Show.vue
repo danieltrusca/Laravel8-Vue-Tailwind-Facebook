@@ -71,8 +71,8 @@
         <div v-else-if="posts.length < 1">No posts found. Get started...</div>
         <Post
             v-else
-            v-for="post in posts.data"
-            :key="post.data.post_id"
+            v-for="(post, postKey) in posts.data"
+            :key="postKey"
             :post="post"
         />
     </div>
@@ -97,6 +97,7 @@ export default {
         ...mapGetters({
             user: "user",
             status: "status",
+            //newsStatus: "newsStatus",
             friendButtonText: "friendButtonText",
             posts: "posts"
         })
