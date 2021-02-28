@@ -119,6 +119,14 @@
                 />
                 <button
                     v-if="commentBody"
+                    @click="
+                        $store.dispatch('commentPost', {
+                            body: commentBody,
+                            postId: post.data.post_id,
+                            postKey: $vnode.key
+                        });
+                        commentBody = '';
+                    "
                     class="bg-gray-200 ml-2 px-2 py-1 rounded-lg focus:outline-none"
                 >
                     Post
