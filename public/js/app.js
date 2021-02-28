@@ -2499,6 +2499,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   computed: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_1__.mapGetters)({
     user: "user",
     status: "status",
+    //newsStatus: "newsStatus",
     friendButtonText: "friendButtonText",
     posts: "posts"
   }))
@@ -2669,7 +2670,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 var state = {
-  posts: null,
+  posts: [],
   postsStatus: null,
   postMessage: ""
 };
@@ -2698,9 +2699,20 @@ var actions = {
       commit("setPostsStatus", "error");
     });
   },
-  postMessage: function postMessage(_ref2) {
+  fetchUserPosts: function fetchUserPosts(_ref2, userId) {
     var commit = _ref2.commit,
         state = _ref2.state;
+    commit("setPostsStatus", "loading");
+    axios.get("/api/users/" + userId + "/posts").then(function (res) {
+      commit("setPosts", res.data);
+      commit("setPostsStatus", "success");
+    })["catch"](function (error) {
+      commit("setPostsStatus", "error");
+    });
+  },
+  postMessage: function postMessage(_ref3) {
+    var commit = _ref3.commit,
+        state = _ref3.state;
     commit("setPostsStatus", "loading");
     axios.post("/api/posts", {
       body: state.postMessage
@@ -2710,9 +2722,9 @@ var actions = {
       commit("updateMessage", "");
     })["catch"](function (error) {});
   },
-  likePost: function likePost(_ref3, data) {
-    var commit = _ref3.commit,
-        state = _ref3.state;
+  likePost: function likePost(_ref4, data) {
+    var commit = _ref4.commit,
+        state = _ref4.state;
     axios.post("/api/posts/" + data.postId + "/like").then(function (res) {
       commit("pushLikes", {
         likes: res.data,
@@ -2720,9 +2732,9 @@ var actions = {
       });
     })["catch"](function (error) {});
   },
-  commentPost: function commentPost(_ref4, data) {
-    var commit = _ref4.commit,
-        state = _ref4.state;
+  commentPost: function commentPost(_ref5, data) {
+    var commit = _ref5.commit,
+        state = _ref5.state;
     axios.post("/api/posts/" + data.postId + "/comment", {
       body: data.body
     }).then(function (res) {
@@ -2775,16 +2787,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 var state = {
   user: null,
-  userStatus: true,
-  posts: [],
-  postsStatus: null
+  userStatus: true
 };
 var getters = {
   user: function user(state) {
     return state.user;
-  },
-  posts: function posts(state) {
-    return state.posts;
   },
   status: function status(state) {
     return {
@@ -2856,17 +2863,6 @@ var actions = {
     }).then(function (res) {
       commit("setUserFriendship", null);
     })["catch"](function (error) {});
-  },
-  fetchUserPosts: function fetchUserPosts(_ref5, userId) {
-    var commit = _ref5.commit,
-        state = _ref5.state;
-    commit("setPostsStatus", "loading");
-    axios.get("/api/users/" + userId + "/posts").then(function (res) {
-      commit("setPosts", res.data);
-      commit("setPostsStatus", "success");
-    })["catch"](function (error) {
-      commit("setPostsStatus", "error");
-    });
   }
 };
 var mutations = {
@@ -2878,12 +2874,6 @@ var mutations = {
   },
   setUserStatus: function setUserStatus(state, userStatus) {
     state.userStatus = userStatus;
-  },
-  setPostsStatus: function setPostsStatus(state, postsStatus) {
-    state.postsStatus = postsStatus;
-  },
-  setPosts: function setPosts(state, posts) {
-    state.posts = posts;
   }
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -40210,11 +40200,8 @@ var render = function() {
             ? _c("div", [_vm._v("Loading posts...")])
             : _vm.posts.length < 1
             ? _c("div", [_vm._v("No posts found. Get started...")])
-            : _vm._l(_vm.posts.data, function(post) {
-                return _c("Post", {
-                  key: post.data.post_id,
-                  attrs: { post: post }
-                })
+            : _vm._l(_vm.posts.data, function(post, postKey) {
+                return _c("Post", { key: postKey, attrs: { post: post } })
               })
         ],
         2

@@ -1,5 +1,5 @@
 const state = {
-    posts: null,
+    posts: [],
     postsStatus: null,
     postMessage: ""
 };
@@ -24,6 +24,18 @@ const actions = {
 
         axios
             .get("/api/posts")
+            .then(res => {
+                commit("setPosts", res.data);
+                commit("setPostsStatus", "success");
+            })
+            .catch(error => {
+                commit("setPostsStatus", "error");
+            });
+    },
+    fetchUserPosts({ commit, state }, userId) {
+        commit("setPostsStatus", "loading");
+        axios
+            .get("/api/users/" + userId + "/posts")
             .then(res => {
                 commit("setPosts", res.data);
                 commit("setPostsStatus", "success");
