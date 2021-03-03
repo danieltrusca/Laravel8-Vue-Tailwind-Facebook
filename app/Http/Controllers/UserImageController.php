@@ -6,27 +6,29 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\UserImage;
 use App\Http\Resources\UserImageResource;
+use Illuminate\Support\Facades\Storage;
 
 class UserImageController extends Controller
 {
     public function store()
     {
-        $data=request()->validate([
+        $data = request()->validate([
             'image' => '',
             'width' => '',
             'height' => '',
             'location' => '',
         ]);
 
-        $image=$data['image']->store('user-images', 'public');
+        $image = $data['image']->store('user-images', 'public');
 
-        $userImage=auth()->user()->images()->create([
-            'path'=>$image,
-            'width'=>$data['width'],
-            'height'=>$data['height'],
-            'location'=>$data['location']
+        $userImage = auth()->user()->images()->create([
+            'path' => $image,
+            'width' => $data['width'],
+            'height' => $data['height'],
+            'location' => $data['location'],
         ]);
 
         return new UserImageResource($userImage);
+
     }
 }

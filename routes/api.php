@@ -28,7 +28,14 @@ Route::middleware('auth:api')->group(function(){
         'user-images'=>UserImageController::class
     ]);
 
+
+
 });
+
+
+
+
+
 // Route::get('/posts', [PostController::class, 'index']);
 // Route::post('/posts', [PostController::class, 'store']);
 

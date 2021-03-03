@@ -5,11 +5,11 @@
     >
         <div class="relative mb-8">
             <div class="w-100 h-64 overflow-hidden z-10">
-                <img
-                    src="https://images.pexels.com/photos/719597/pexels-photo-719597.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
-                    alt="user_background"
-                    class="object-cover w-full"
-                />
+                <UploadableImage
+                    image-width="1500"
+                    image-height="500"
+                    location="cover"
+                ></UploadableImage>
             </div>
             <div
                 class="absolute flex items-center bottom-0 left-0 -mb-8 ml-12 z-20"
@@ -67,6 +67,7 @@
                 </button>
             </div>
         </div>
+
         <div v-if="status.posts === 'loading'">Loading posts...</div>
         <div v-else-if="posts.length < 1">No posts found. Get started...</div>
         <Post
@@ -80,11 +81,13 @@
 
 <script>
 import Post from "../../components/Post.vue";
+import UploadableImage from "../../components/UploadableImage.vue";
 import { mapGetters } from "vuex";
 export default {
     name: "Show",
     components: {
-        Post
+        Post,
+        UploadableImage
     },
 
     mounted() {
