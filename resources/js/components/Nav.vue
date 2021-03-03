@@ -59,7 +59,10 @@
                 class="px-6 border-b-2 border-white h-full flex items-center "
             >
                 <img
-                    src="https://images.pexels.com/photos/670720/pexels-photo-670720.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
+                    :src="
+                        authUser.data.attributes.profile_image.data.attributes
+                            .path
+                    "
                     alt="profile image for user"
                     class="w-8 h-8 object-cover rounded-full"
                 />

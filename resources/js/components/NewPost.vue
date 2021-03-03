@@ -4,7 +4,10 @@
             <div>
                 <div class="w-8">
                     <img
-                        src="https://images.pexels.com/photos/670720/pexels-photo-670720.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
+                        :src="
+                            authUser.data.attributes.profile_image.data
+                                .attributes.path
+                        "
                         alt="profile image for user"
                         class="w-8 h-8 object-cover rounded-full"
                     />
@@ -50,9 +53,13 @@
 
 <script>
 import _ from "lodash";
+import { mapGetters } from "vuex";
 export default {
     name: "NewPost",
     computed: {
+        ...mapGetters({
+            authUser: "authUser"
+        }),
         postMessage: {
             get() {
                 return this.$store.getters.postMessage;
