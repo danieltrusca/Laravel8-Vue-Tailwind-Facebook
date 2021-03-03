@@ -9,17 +9,23 @@
                     image-width="1500"
                     image-height="500"
                     location="cover"
+                    classes="object-cover w-full"
+                    alt="user background image"
+                    :user-image="user.data.attributes.cover_image"
                 ></UploadableImage>
             </div>
             <div
                 class="absolute flex items-center bottom-0 left-0 -mb-8 ml-12 z-20"
             >
                 <div class="w-32">
-                    <img
-                        src="https://images.pexels.com/photos/670720/pexels-photo-670720.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
+                    <UploadableImage
+                        image-width="750"
+                        image-height="750"
+                        location="profile"
+                        classes="object-cover w-32 h-32 border-4 border-gray-200 rounded-full shadow-lg"
                         alt="user_profile_image"
-                        class="object-cover w-32 h-32 border-4 border-gray-200 rounded-full shadow-lg"
-                    />
+                        :user-image="user.data.attributes.profile_image"
+                    ></UploadableImage>
                 </div>
                 <p class="text-2xl text-gray-100 ml-4">
                     {{ user ? user.data.attributes.name : "" }}

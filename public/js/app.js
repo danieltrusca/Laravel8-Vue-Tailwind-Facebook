@@ -2360,10 +2360,11 @@ __webpack_require__.r(__webpack_exports__);
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "UploadableImage",
-  props: ["imageWidth", "imageHeight", "location"],
+  props: ["userImage", "imageWidth", "imageHeight", "location", "classes", "alt"],
   data: function data() {
     return {
-      dropzone: null
+      dropzone: null,
+      uploadedImage: null
     };
   },
   mounted: function mounted() {
@@ -2371,6 +2372,8 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     settings: function settings() {
+      var _this = this;
+
       return {
         paramName: "image",
         url: "/api/user-images",
@@ -2384,9 +2387,13 @@ __webpack_require__.r(__webpack_exports__);
           "X-CSRF-TOKEN": document.head.querySelector("meta[name=csrf-token]").content
         },
         success: function success(e, res) {
-          alert("uploaded!");
+          // alert("uploaded!");
+          _this.uploadedImage = res;
         }
       };
+    },
+    imageObject: function imageObject() {
+      return this.uploadedImage || this.userImage;
     }
   }
 });
@@ -2466,6 +2473,12 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -50672,12 +50685,8 @@ var render = function() {
   return _c("div", [
     _c("img", {
       ref: "userImage",
-      staticClass: "object-cover w-full",
-      attrs: {
-        src:
-          "https://images.pexels.com/photos/719597/pexels-photo-719597.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-        alt: "user background image"
-      }
+      class: _vm.classes,
+      attrs: { src: _vm.imageObject.data.attributes.path, alt: _vm.alt }
     })
   ])
 }
@@ -50756,7 +50765,10 @@ var render = function() {
                   attrs: {
                     "image-width": "1500",
                     "image-height": "500",
-                    location: "cover"
+                    location: "cover",
+                    classes: "object-cover w-full",
+                    alt: "user background image",
+                    "user-image": _vm.user.data.attributes.cover_image
                   }
                 })
               ],
@@ -50770,7 +50782,24 @@ var render = function() {
                   "absolute flex items-center bottom-0 left-0 -mb-8 ml-12 z-20"
               },
               [
-                _vm._m(0),
+                _c(
+                  "div",
+                  { staticClass: "w-32" },
+                  [
+                    _c("UploadableImage", {
+                      attrs: {
+                        "image-width": "750",
+                        "image-height": "750",
+                        location: "profile",
+                        classes:
+                          "object-cover w-32 h-32 border-4 border-gray-200 rounded-full shadow-lg",
+                        alt: "user_profile_image",
+                        "user-image": _vm.user.data.attributes.profile_image
+                      }
+                    })
+                  ],
+                  1
+                ),
                 _vm._v(" "),
                 _c("p", { staticClass: "text-2xl text-gray-100 ml-4" }, [
                   _vm._v(
@@ -50864,24 +50893,7 @@ var render = function() {
       )
     : _vm._e()
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "w-32" }, [
-      _c("img", {
-        staticClass:
-          "object-cover w-32 h-32 border-4 border-gray-200 rounded-full shadow-lg",
-        attrs: {
-          src:
-            "https://images.pexels.com/photos/670720/pexels-photo-670720.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-          alt: "user_profile_image"
-        }
-      })
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 

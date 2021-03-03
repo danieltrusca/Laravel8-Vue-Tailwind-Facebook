@@ -1,10 +1,10 @@
 <template>
     <div>
         <img
-            src="https://images.pexels.com/photos/719597/pexels-photo-719597.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
-            alt="user background image"
+            :src="imageObject.data.attributes.path"
+            :alt="alt"
             ref="userImage"
-            class="object-cover w-full"
+            :class="classes"
         />
     </div>
 </template>
@@ -15,11 +15,19 @@ import Dropzone from "dropzone";
 export default {
     name: "UploadableImage",
 
-    props: ["imageWidth", "imageHeight", "location"],
+    props: [
+        "userImage",
+        "imageWidth",
+        "imageHeight",
+        "location",
+        "classes",
+        "alt"
+    ],
 
     data: () => {
         return {
-            dropzone: null
+            dropzone: null,
+            uploadedImage: null
         };
     },
 
@@ -44,9 +52,13 @@ export default {
                     ).content
                 },
                 success: (e, res) => {
-                    alert("uploaded!");
+                    // alert("uploaded!");
+                    this.uploadedImage = res;
                 }
             };
+        },
+        imageObject() {
+            return this.uploadedImage || this.userImage;
         }
     }
 };
