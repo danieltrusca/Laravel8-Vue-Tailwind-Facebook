@@ -54,8 +54,20 @@
 <script>
 import _ from "lodash";
 import { mapGetters } from "vuex";
+import Dropzone from "dropzone";
+
 export default {
     name: "NewPost",
+    data: () => {
+        return {
+            dropzone: null
+        };
+    },
+
+    mounted() {
+        this.dropzone = new Dropzone(this.$refs.postImage, this.settings);
+    },
+
     computed: {
         ...mapGetters({
             authUser: "authUser"
@@ -71,11 +83,43 @@ export default {
             set: _.debounce(function(postMessage) {
                 this.$store.commit("updateMessage", postMessage);
             }, 300)
+        },
+        settings() {
+            return {
+                paramName: "image",
+                url: "/api/posts",
+                acceptedFiles: "image/*",
+                clickable: ".dz-clickable",
+                autoProcessQueue: false,
+
+                params: {
+                    width: 1000,
+                    height: 1000
+                },
+                headers: {
+                    "X-CSRF-TOKEN": document.head.querySelector(
+                        "meta[name=csrf-token]"
+                    ).content
+                },
+
+                sending: (file, xhr, formData) => {
+                    formData.append("body", this.$store.getters.postMessage);
+                },
+
+                success: (event, res) => {
+                    alert("success");
+                }
+            };
         }
     },
     methods: {
         postHandler() {
-            this.$store.dispatch("postMessage");
+            if (this.dropzone.getAcceptedFiles().length) {
+                this.dropzone.processQueue();
+            } else {
+                //alert("no file");
+                this.$store.dispatch("postMessage");
+            }
         }
     }
 };
