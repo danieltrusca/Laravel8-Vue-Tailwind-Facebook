@@ -10,6 +10,7 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 use App\Models\Post;
+use App\Models\UserImage;
 
 class User extends Authenticatable
 {
@@ -72,5 +73,28 @@ class User extends Authenticatable
 
     public function posts(){
         return $this->hasMany(Post::class);
+    }
+
+    public function images(){
+        return $this->hasMany(UserImage::class);
+    }
+
+    public function coverImage(){
+        return $this->hasOne(UserImage::class)
+            ->orderByDesc('id')
+            ->where('location', 'cover')
+            ->withDefault(function($userImage){
+                $userImage->path='user-images/cover-default-image.png';
+            });
+    }
+
+    public function profileImage()
+    {
+        return $this->hasOne(UserImage::class)
+            ->orderByDesc('id')
+            ->where('location', 'profile')
+            ->withDefault(function($userImage){
+                $userImage->path='user-images/profile-default-image.jpeg';
+            });
     }
 }
