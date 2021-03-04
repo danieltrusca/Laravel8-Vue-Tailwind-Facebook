@@ -107,6 +107,7 @@ export default {
                 acceptedFiles: "image/*",
                 clickable: ".dz-clickable",
                 autoProcessQueue: false,
+                maxFiles: 1,
                 previewsContainer: ".dropzone-previews",
                 previewTemplate: document.querySelector("#dz-template")
                     .innerHTML,
@@ -129,6 +130,10 @@ export default {
                     this.dropzone.removeAllFiles();
 
                     this.$store.commit("pushPost", res);
+                },
+                maxfilesexceeded: file => {
+                    this.dropzone.removeAllFiles();
+                    this.dropzone.addFile(file);
                 }
             };
         }
