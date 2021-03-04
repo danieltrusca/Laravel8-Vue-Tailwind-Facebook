@@ -2099,6 +2099,22 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -2136,6 +2152,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         acceptedFiles: "image/*",
         clickable: ".dz-clickable",
         autoProcessQueue: false,
+        previewsContainer: ".dropzone-previews",
+        previewTemplate: document.querySelector("#dz-template").innerHTML,
         params: {
           width: 1000,
           height: 1000
@@ -2147,7 +2165,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           formData.append("body", _this.$store.getters.postMessage);
         },
         success: function success(event, res) {
-          alert("success");
+          _this.dropzone.removeAllFiles();
+
+          _this.$store.commit("pushPost", res);
         }
       };
     }
@@ -2160,6 +2180,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         //alert("no file");
         this.$store.dispatch("postMessage");
       }
+
+      this.$store.commit("updateMessage", "");
     }
   }
 });
@@ -2525,7 +2547,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
   computed: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_2__.mapGetters)({
     posts: "posts",
-    newsStatus: "newsStatus"
+    postsStatus: "postsStatus"
   }))
 });
 
@@ -2833,10 +2855,13 @@ var getters = {
   posts: function posts(state) {
     return state.posts;
   },
-  newsStatus: function newsStatus(state) {
-    return {
-      postsStatus: state.postsStatus
-    };
+  // newsStatus: state => {
+  //     return {
+  //         postsStatus: state.postsStatus
+  //     };
+  // },
+  postsStatus: function postsStatus(state) {
+    return state.postsStatus;
   },
   postMessage: function postMessage(state) {
     return state.postMessage;
@@ -50334,10 +50359,43 @@ var render = function() {
           ]
         )
       ])
-    ])
+    ]),
+    _vm._v(" "),
+    _vm._m(0)
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "dropzone-previews" }, [
+      _c("div", { staticClass: "hidden", attrs: { id: "dz-template" } }, [
+        _c("div", { staticClass: "dz-preview dz-file-preview mt-4" }, [
+          _c("div", { staticClass: "dz-details" }, [
+            _c("img", {
+              staticClass: "w-32 h-32",
+              attrs: { "data-dz-thumbnail": "" }
+            }),
+            _vm._v(" "),
+            _c(
+              "button",
+              { staticClass: "text-xs", attrs: { "data-dz-remove": "" } },
+              [_vm._v("\n                        REMOVE\n                    ")]
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "dz-progress" }, [
+            _c("span", {
+              staticClass: "dz-upload",
+              attrs: { "data-dz-upload": "" }
+            })
+          ])
+        ])
+      ])
+    ])
+  }
+]
 render._withStripped = true
 
 
@@ -50780,7 +50838,7 @@ var render = function() {
     [
       _c("NewPost"),
       _vm._v(" "),
-      _vm.newsStatus.postsStatus === "loading"
+      _vm.postsStatus === "loading"
         ? _c("p", [_vm._v("Loading...")])
         : _vm._l(_vm.posts.data, function(post, postKey) {
             return _c("Post", { key: postKey, attrs: { post: post } })

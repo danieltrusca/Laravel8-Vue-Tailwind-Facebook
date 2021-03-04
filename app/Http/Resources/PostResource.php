@@ -25,7 +25,7 @@ class PostResource extends JsonResource
                         'likes' => new LikeCollection($this->likes),
                         'comments'=>new CommentCollection($this->comments),
                         'body' => $this->body,
-                        'image'=>asset('storage/'.$this->image),
+                        'image'=>$this->image ? asset('storage/'.$this->image) : null,
                         'posted_at'=>$this->created_at->diffForHumans(),
                     ]
                 ],

@@ -48,11 +48,13 @@ class PostController extends Controller
             Image::make($data['image'])
                 ->fit($data['width'], $data['height'])
                 ->save(storage_path('app/public/post-images/'.$data['image']->hashName()));
+        } else {
+            $image=null;
         }
 
         $post = request()->user()->posts()->create([
             'body'=>$data['body'],
-            'image'=>$image ? $image : null
+            'image'=>$image
         ]);
 
         return new PostResource($post);

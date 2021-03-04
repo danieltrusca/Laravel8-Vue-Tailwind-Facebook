@@ -8,10 +8,13 @@ const getters = {
     posts: state => {
         return state.posts;
     },
-    newsStatus: state => {
-        return {
-            postsStatus: state.postsStatus
-        };
+    // newsStatus: state => {
+    //     return {
+    //         postsStatus: state.postsStatus
+    //     };
+    // },
+    postsStatus: state => {
+        return state.postsStatus;
     },
     postMessage: state => {
         return state.postMessage;
