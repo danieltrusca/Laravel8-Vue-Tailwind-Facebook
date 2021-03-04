@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Friend;
 use App\Http\Resources\PostResource;
 use App\Http\Resources\PostCollection;
+use Intervention\Image\Facades\Image;
 
 class PostController extends Controller
 {
@@ -35,10 +36,26 @@ class PostController extends Controller
     public function store()
     {
         $data=request()->validate([
-            'body'=>''
+            'body'=>'',
+            'image'=>'',
+            'width'=>'',
+            'height'=>''
         ]);
 
-        $post = request()->user()->posts()->create($data);
+        if (isset($data['image'])) {
+            $image = $data['image']->store('post-images', 'public');
+
+            Image::make($data['image'])
+                ->fit($data['width'], $data['height'])
+                ->save(storage_path('app/public/post-images/'.$data['image']->hashName()));
+        } else {
+            $image=null;
+        }
+
+        $post = request()->user()->posts()->create([
+            'body'=>$data['body'],
+            'image'=>$image
+        ]);
 
         return new PostResource($post);
     }

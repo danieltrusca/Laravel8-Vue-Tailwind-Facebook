@@ -48,14 +48,42 @@
                 </button>
             </div>
         </div>
+        <div class="dropzone-previews">
+            <div id="dz-template" class="hidden">
+                <div class="dz-preview dz-file-preview mt-4">
+                    <div class="dz-details">
+                        <img data-dz-thumbnail class="w-32 h-32" />
+
+                        <button data-dz-remove class="text-xs">
+                            REMOVE
+                        </button>
+                    </div>
+                    <div class="dz-progress">
+                        <span class="dz-upload" data-dz-upload></span>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
 import _ from "lodash";
 import { mapGetters } from "vuex";
+import Dropzone from "dropzone";
+
 export default {
     name: "NewPost",
+    data: () => {
+        return {
+            dropzone: null
+        };
+    },
+
+    mounted() {
+        this.dropzone = new Dropzone(this.$refs.postImage, this.settings);
+    },
+
     computed: {
         ...mapGetters({
             authUser: "authUser"
@@ -71,11 +99,55 @@ export default {
             set: _.debounce(function(postMessage) {
                 this.$store.commit("updateMessage", postMessage);
             }, 300)
+        },
+        settings() {
+            return {
+                paramName: "image",
+                url: "/api/posts",
+                acceptedFiles: "image/*",
+                clickable: ".dz-clickable",
+                autoProcessQueue: false,
+                maxFiles: 1,
+                previewsContainer: ".dropzone-previews",
+                previewTemplate: document.querySelector("#dz-template")
+                    .innerHTML,
+
+                params: {
+                    width: 1000,
+                    height: 1000
+                },
+                headers: {
+                    "X-CSRF-TOKEN": document.head.querySelector(
+                        "meta[name=csrf-token]"
+                    ).content
+                },
+
+                sending: (file, xhr, formData) => {
+                    formData.append("body", this.$store.getters.postMessage);
+                },
+
+                success: (event, res) => {
+                    this.dropzone.removeAllFiles();
+
+                    this.$store.commit("pushPost", res);
+                },
+                maxfilesexceeded: file => {
+                    this.dropzone.removeAllFiles();
+                    this.dropzone.addFile(file);
+                }
+            };
         }
     },
     methods: {
         postHandler() {
-            this.$store.dispatch("postMessage");
+            if (this.dropzone.getAcceptedFiles().length) {
+                this.dropzone.processQueue();
+            } else {
+                //alert("no file");
+                this.$store.dispatch("postMessage");
+            }
+
+            this.$store.commit("updateMessage", "");
         }
     }
 };
